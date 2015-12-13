@@ -2,10 +2,11 @@ include("MITgcmDatas.jl")
 include("days_Parse_Selector.jl")
 
 using DataFrames
+typealias Tsize Tuple{Int64, Vararg{Int64}}
 
 function bread(singleFile :: ASCIIString, m :: MITgcmDatas; 
                varoffset :: Int64 = 1, 
-               varsize :: Tuple{Int64} = (m.nx, m.ny, m.nz) )
+               varsize :: Tsize = (m.nx, m.ny, m.nz) )
   open(singleFile) do fid
     seek(fid,8*(varoffset-1))
     x = read(fid, Float64, varsize)
@@ -17,7 +18,7 @@ function bread( m :: MITgcmDatas, varfile :: ASCIIString;
                 selector :: Function = days , 
                 varoffset :: Int64 = 1, 
                 whether_mean :: Bool = true, 
-                varsize :: Tuple{Int64} = (m.nx, m.ny, m.nz) )
+                varsize :: Tsize = (m.nx, m.ny, m.nz) )
   (files, times) = filestimes(m, varfile)
   (fs,ts) = map((files, times)) do x
     x[selector(times)]
