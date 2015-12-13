@@ -21,6 +21,5 @@ end
 
 
 export MITgcmDatas
-export bread
 
 
