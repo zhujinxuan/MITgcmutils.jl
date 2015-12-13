@@ -39,4 +39,4 @@ function bread( m :: MITgcmDatas, varfile :: ASCIIString;
   end
 
 end
-
+export bread
