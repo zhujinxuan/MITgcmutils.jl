@@ -17,7 +17,7 @@ end
 function bread( m :: MITgcmDatas, varfile :: ASCIIString; 
                 selector :: Function = days , 
                 varoffset :: Int64 = 1, 
-                whether_mean :: Bool = true, 
+                whether_mean :: Bool = false, 
                 varsize :: Tsize = (m.nx, m.ny, m.nz) )
   (files, times) = filestimes(m, varfile)
   (fs,ts) = map((files, times)) do x
@@ -26,13 +26,13 @@ function bread( m :: MITgcmDatas, varfile :: ASCIIString;
   println("Reading $(length(ts)) files")
 
   if (whether_mean)
-    result = zeros(m.nx,m.ny,m.nz)
+    result = zeros(varsize...)
     for ii = 1:length(ts)
       result[:,:,:] +=  bread("$(m.Dir)/$(fs[ii])",m, varoffset = varoffset, varsize = varsize)
     end
     return result/length(ts)
   else
-    result = zeros(m.nx,m.ny,m.nz, length(ts))
+    result = zeros(varsize..., length(ts))
     for ii = 1:length(ts)
       result[:,:,:,ii] = bread("$(m.Dir)/$(fs[ii])",m, varoffset = varoffset, varsize = varsize)
     end
