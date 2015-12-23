@@ -8,7 +8,7 @@ function bread(singleFile :: ASCIIString, m :: MITgcmDatas;
                varoffset :: Int64 = 1, 
                varsize :: Tsize = (m.nx, m.ny, m.nz) )
   open(singleFile) do fid
-    seek(fid,8*(varoffset-1))
+    seek(fid,8*(varoffset))
     x = read(fid, Float64, varsize)
     map(ntoh,x)
   end
@@ -16,12 +16,12 @@ end
 
 function bread( m :: MITgcmDatas, varfile :: ASCIIString; 
                 selector :: Function = days , 
-                varoffset :: Int64 = 1, 
+                varoffset :: Int64 = 0, 
                 whether_mean :: Bool = false, 
                 varsize :: Tsize = (m.nx, m.ny, m.nz) )
-  (files, times) = filestimes(m, varfile)
-  (fs,ts) = map((files, times)) do x
-    x[selector(times)]
+  (files, timesteps) = filestimes(m, varfile)
+  (fs,ts) = map((files, timesteps)) do x
+    x[selector(timesteps, m)]
   end
   println("Reading $(length(ts)) files")
 
@@ -40,4 +40,21 @@ function bread( m :: MITgcmDatas, varfile :: ASCIIString;
   end
 
 end
+
+function bread( m :: MITgcmDatas,
+                FileDataOffset :: DataFrame, varname :: ASCIIString;
+                selector :: Function =  exactTimeStep, 
+                whether_mean :: Bool = true
+                )
+  df = FileDataOffset[FileDataOffset[:varname] .==  varname, :]
+  @assert (size(df,1) == 1)
+  varoffset = df[1, :varoffset]
+  varsize = df[1, :varsize]
+  varfile = df[1, :varfile]
+  return bread( m , varfile ; selector = selector , 
+                varoffset = varoffset,
+                whether_mean = whether_mean,
+                varsize = varsize)
+end
+
 export bread

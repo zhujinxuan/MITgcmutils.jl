@@ -1,5 +1,6 @@
-function days(times :: Array{Float64,1};min = 20, max = 30 )
-  return (min*86400 .< times .< max*86400)
+function days(times :: Array{Int64,1}, m :: MITgcmDatas 
+              ;min = 15, max = 20 , dt = m.dt )
+  return (min*86400 .< (times * dt).< max*86400)
 end
 
 export days
@@ -13,7 +14,11 @@ function filestimes(m:: MITgcmDatas, varfile :: ASCIIString)
     p = match(r"[0-9]+",x1)
     parse(Int64,p.match)
   end
-  return (filenames, nsteps * m.dt)
+  return (filenames, nsteps )
 end
 
-
+function exactTimeStep(times :: Array{Int64,1}, m :: MITgcmDatas;
+                       minstep :: Int64 = 56880, maxstep :: Int64 = 57000)
+  return  minstep .<= times .<= maxstep
+end
+export exactTimeStep
