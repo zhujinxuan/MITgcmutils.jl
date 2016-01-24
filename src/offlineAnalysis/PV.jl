@@ -21,22 +21,22 @@ function MITgcmPV( u :: Array{Float64,3}, v :: Array{Float64,3},
   dudy = begin
     fdy =  dimDiff(u, 2, OnePointLR()) /(m.dyspacing)
     dimAverage(fdy,1, parIndent)
-    dimMoves(fdy,2,OnePointR())
+    #= dimMoves(fdy,2,OnePointR()) =#
   end
   dvdx = begin
     fdx = dimDiff(v,1,OnePointLR())/(m.dxspacing)
     dimAverage(fdx, 2,parIndent)
-    dimMoves(fdx,1,OnePointR())
+    #= dimMoves(fdx,1,OnePointR()) =#
   end
   dudz = begin
     fdz = -dimDiff(u,3,OnePointLR())/dzspacing 
     dimAverage(fdz,1, parIndent)
-    dimMoves(fdz,2,OnePointR())
+    #= dimMoves(fdz,2,OnePointR()) =#
   end
   dvdz = begin
     fdz = -dimDiff(v,3,OnePointLR())/dzspacing
     dimAverage(fdz,2, parIndent)
-    dimMoves(fdz,1,OnePointR())
+    #= dimMoves(fdz,1,OnePointR()) =#
   end
   avor = ( -dvdz, dudz, f+(dvdx - dudy))
 

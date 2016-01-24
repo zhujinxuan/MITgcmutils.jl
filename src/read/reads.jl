@@ -29,6 +29,7 @@ function bread( m :: MITgcmDatas, varfile :: ASCIIString;
     result = zeros(varsize...)
     for ii = 1:length(ts)
       result[:,:,:] +=  bread("$(m.Dir)/$(fs[ii])",m, varoffset = varoffset, varsize = varsize)
+      println("Filename is $(m.Dir)/$(fs[ii]), with offsize as $varoffset")
     end
     return result/length(ts)
   else

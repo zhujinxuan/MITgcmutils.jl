@@ -19,6 +19,6 @@ end
 
 function exactTimeStep(times :: Array{Int64,1}, m :: MITgcmDatas;
                        minstep :: Int64 = 56880, maxstep :: Int64 = 57000)
-  return  minstep .<= times .<= maxstep
+  return  minstep .< times .<= maxstep
 end
 export exactTimeStep
